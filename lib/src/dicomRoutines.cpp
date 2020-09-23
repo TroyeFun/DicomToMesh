@@ -119,13 +119,25 @@ void VTKDicomRoutines::cropDicom( vtkSmartPointer<vtkImageData> imageData )
     int xd = inputImgDimension[0]; int yd = inputImgDimension[1]; int zd = inputImgDimension[2];
 
     // ask user for slice range
-    int startSlice, endSlice;
+    int startSlice, endSlice, left, top, right, bottom;
     cout << "Input image sclice range from   0 - " << zd << endl;
     cout << "Start slice = ";
     int startSliceScanRes = std::scanf("%d", &startSlice);
     cout << endl << "End slice = ";
     int endSliceScanRes = std::scanf("%d", &endSlice);
-    cout << endl;
+    cout << endl << "Left x = (input -1 if not specified)";
+    std::scanf("%d", &left);
+    cout << endl << "Top y = (input -1 if not specified)";
+    std::scanf("%d", &top);
+    cout << endl << "Right x = (input -1 if not specified)";
+    std::scanf("%d", &right);
+    cout << endl << "Bottom y = (input -1 if not specified)";
+    std::scanf("%d", &bottom);
+
+    if (left == -1) left = 0;
+    if (top == -1) top = 0;
+    if (right == -1) right = xd-1;
+    if (bottom == -1) bottom = yd-1;
 
     // check passed slice values
     if( startSliceScanRes != 1 || endSliceScanRes != 1 || startSlice < 0 || startSlice > endSlice || endSlice >= zd )
@@ -138,7 +150,7 @@ void VTKDicomRoutines::cropDicom( vtkSmartPointer<vtkImageData> imageData )
 
         vtkSmartPointer<vtkExtractVOI> cropper = vtkSmartPointer<vtkExtractVOI>::New();
         cropper->SetInputData( imageData );
-        cropper->SetVOI(0,xd-1, 0,yd-1, startSlice, endSlice );
+        cropper->SetVOI(left, right, top, bottom, startSlice, endSlice );
         if( m_progressCallback.Get() != NULL )
         {
             cropper->AddObserver(vtkCommand::ProgressEvent, m_progressCallback);

@@ -1,0 +1,4 @@
+./dicom2mesh/dicom2mesh -i ../../../dicom_images/ -v -t 400 -s -z -e 0.5 -o ../../../ear.stl
+
+startSlice, endSlice = 0, 71
+left, top, right, bottom = 90, 114, 300, 250
